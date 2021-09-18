@@ -31,6 +31,8 @@ class Getters:
 
     def response(self):
         """
+        Get responses from url with params
+
         :return: response in JSON format
         """
         response = requests.get(self.link + self.params,
@@ -41,6 +43,7 @@ class Getters:
 def get_cost_param(quantity=1):
     """
     Create parameters string to get_cost obj
+
     :param quantity:  0 - all, 1 - not null quantity, 2 - null quantity
     :return: parameter string
     """
@@ -59,7 +62,8 @@ url_cost = f"https://suppliers-api.wildberries.ru/public/api/v1/info"
 def get_market_param(search=None, skip=0, take=10, sort=None,
                      order=None):
     """
-    Create parameters string for
+    Create parameters string for get_stocks
+
     :param search: None or str
            Word or word fragment to search
     :param skip: int
@@ -70,6 +74,7 @@ def get_market_param(search=None, skip=0, take=10, sort=None,
                  brand, name, size, barcode, articles)
            On which field sort
     :param order: None or str(asc) or str(desc)
+           Order of sort: asc or desc
     :return: str
             parameters for get_stocks
     """
@@ -106,8 +111,31 @@ warehouse_url = "https://suppliers-api.wildberries.ru/api/v2/warehouses"
 def get_orders_param(date_start=(datetime.today() - timedelta(days=1)),
                      date_end=None, status=None, take=10, skip=0,
                      order_id=None):
+    """
+    Create parameter string for get_order
+
+    :param date_start:  None or datetime obj
+           Date of starting of search, if None - yesterday
+    :param date_end: None or datetime obj
+           Date of ending of search, if None - now
+    :param status: None or int from 0 to 8 without 4
+           If None - all
+           0 = new order; 1 = accepted order; 2 = End of assembly task
+           3 = Declined assembly task; 5 = On delivery; 6 = Client taken delivery;
+           7 = Client refused to take delivery
+    :param take: None or int
+           If None = 10
+           Num of taken orders (pagination)
+    :param skip: int
+           If None = 0
+           Num of skipped orders (pagination)
+    :param order_id: None or int
+           Number of order
+    :return: str
+             string of parameters
+    """
     param ='?'
-    STATUSES_LIST = list(range(0, 8))
+    STATUSES_LIST = [0, 1, 2, 3, 5, 6, 7]
     date_format = '%Y-%m-%dT'  # formatting time into RFC3339
     if not isinstance(date_start, datetime):
         raise ValueError("date_start must be datetime obj")
@@ -120,7 +148,7 @@ def get_orders_param(date_start=(datetime.today() - timedelta(days=1)),
                          '00%3A00%3A00.000%2B10%3A00')
     elif date_end is not None and not isinstance(date_end, datetime):
         raise ValueError('date_end must be datetime obj')
-    if isinstance(status, int):
+    if status in STATUSES_LIST:
         param += ''.join(f'&status={status}')
     elif status is not None and status not in STATUSES_LIST:
         raise ValueError('status must be int in range from 0 to 7')
