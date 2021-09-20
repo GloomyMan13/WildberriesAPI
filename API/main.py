@@ -1,6 +1,7 @@
-from API.logic import Getters
+from API.logic import Getters, GetObjectInfo
 from API.login import headers
 
-orders = 'stocks'
-get_orders = Getters(orders, head=headers, take=20)
+orders = 'config'
+get_orders = GetObjectInfo(orders, headers, name='Шампуни')
+print(get_orders.response())
 

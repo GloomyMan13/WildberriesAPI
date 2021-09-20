@@ -23,19 +23,20 @@ class Getters:
 
         try:
             key = key.lower()
-            self.link = Getters.__KEYS[key]
+            self.link = self.__KEYS[key]
         except KeyError:
             print("Wrong keyword")
         except AttributeError:
             print('Key must be a string')
+
         if isinstance(headers, requests.structures.CaseInsensitiveDict):
             self.headers = head
         else:
             raise ValueError('Headers must be a dict')
-        self.params = self.__setparam(key, **kwargs)
+        self.params = self._setparam(key, **kwargs)
 
     @staticmethod
-    def __setparam(key, **kwargs):
+    def _setparam(key, **kwargs):
         if key == 'orders':
             return Getters.__orders(**kwargs)
         elif key == 'stocks':
@@ -174,6 +175,59 @@ class Getters:
         'stocks': "https://suppliers-api.wildberries.ru/api/v2/stocks"
     }
 
+
+class GetObjectInfo:
+    def __init__(self, key, head=headers, **kwargs):
+        try:
+            key = key.lower()
+            self.link = self.__KEYS[key]
+        except KeyError:
+            print("Wrong keyword")
+        except AttributeError:
+            print('Key must be a string')
+
+        if isinstance(headers, requests.structures.CaseInsensitiveDict):
+            self.headers = head
+        else:
+            raise ValueError('Headers must be a dict')
+        self.params = self._setparam(key, **kwargs)
+
+    @staticmethod
+    def _setparam(key, **kwargs):
+        if key == 'config':
+            return GetObjectInfo.__config(**kwargs)
+        elif key == 'search by pattern':
+            return GetObjectInfo.__search_by_pattern(**kwargs)
+
+    @staticmethod
+    def __config(name):
+        if isinstance(name, str):
+            return f'name={name}'
+        else:
+            raise ValueError('Name must be a string')
+
+    @staticmethod
+    def __search_by_pattern(name, parent, lang='ru'):
+        if map(isinstance, (name, parent, lang), str):
+            result = ''.join(f'pattern={name}&lang={lang}&parent={parent}')
+            return result
+        else:
+            raise ValueError('All args must be a string')
+
+    def response(self):
+        """
+        Get responses from url with params
+
+        :return: response in JSON format
+        """
+        response = requests.get(self.link + self.params,
+                                headers=self.headers)
+        return response.json()
+
+    __KEYS = {
+        'config': 'https://suppliers-api.wildberries.ru/api/v1/config/get/object/translated?',
+        'search by pattern': "https://suppliers-api.wildberries.ru/api/v1/config/get/object/list?"
+              }
 
 
 
