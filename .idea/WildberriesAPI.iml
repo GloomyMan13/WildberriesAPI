@@ -3,8 +3,8 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/venv" />
-      <excludePattern pattern="login.py" />
-      <excludePattern pattern=" settings.py" />
+      <excludePattern pattern="API/login.py" />
+      <excludePattern pattern=" Django/settings.py" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
