@@ -8,7 +8,11 @@ class Getters:
     """
     Include objects with request.get
 
-    :method response: Return result of request.get in JSON
+    :method __setparam: Chose function for generating parameter string, base on key arg
+    :method __stocks: Generates parameter string for get.stocks
+    :method __orders: Generates parameter string for get.orders
+    :method __cost: Generates parameter string for get.costs
+    :method response: Unit url, parameters, headers and return result of request.get in JSON
     """
     def __init__(self, key, head=headers, **kwargs):
         """
