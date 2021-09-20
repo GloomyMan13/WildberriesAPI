@@ -1,3 +1,5 @@
+from requests.structures import CaseInsensitiveDict
+
 headers = CaseInsensitiveDict()
 headers["accept"] = "application/json"
 headers["Authorization"] = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9." \
