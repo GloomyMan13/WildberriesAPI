@@ -1,7 +1,7 @@
 import requests
 from requests.structures import CaseInsensitiveDict
 from datetime import datetime, timedelta
-from login import headers
+from API.login import headers
 
 
 class Getters:
