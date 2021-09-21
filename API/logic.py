@@ -69,7 +69,7 @@ class Getters:
         ORDER_LIST = ['asc', 'desc']
         if isinstance(search, str):
             param += ''.join(f'search={search}&')
-        elif not isinstance(search, str) and search is not None:
+        elif not isinstance(search, (str, type(None))):
             raise ValueError("search must be a str")
         if not isinstance(skip, int):
             raise ValueError('skip must be an int')
@@ -125,7 +125,7 @@ class Getters:
             date_end = date_end.strftime(date_format)
             param += ''.join(f'&date_end={date_end}' +
                              '00%3A00%3A00.000%2B10%3A00')
-        elif date_end is not None and not isinstance(date_end, datetime):
+        elif not isinstance(date_end, (datetime, type(None))):
             raise ValueError('date_end must be datetime obj')
         if status in STATUSES_LIST:
             param += ''.join(f'&status={status}')
@@ -138,7 +138,7 @@ class Getters:
         param += ''.join(f'&skip={skip}&take={take}')
         if isinstance(order_id, int):
             param += ''.join(f'&id={order_id}')
-        elif order_id is not None and not isinstance(order_id, int):
+        elif not isinstance(order_id, (int, type(None))):
             raise ValueError('order_id must be an int')
         return param
 
@@ -199,6 +199,8 @@ class GetObjectInfo:
             return GetObjectInfo.__search_by_pattern(**params)
         elif key == 'colors':
             return GetObjectInfo.__colors(**params)
+        elif key == 'gender':
+            return GetObjectInfo.__gender(**params)
 
     @staticmethod
     def __config(name):
@@ -215,6 +217,22 @@ class GetObjectInfo:
         else:
             raise ValueError('All args must be a string')
 
+    @staticmethod
+    def __colors(top=100, pattern=None, obj_id=None):
+        if isinstance(top, int):
+            result = ''.join(f'top={top}')
+        else:
+            raise ValueError('tom must be an int')
+        if isinstance(pattern, str):
+            result += ''.join(f'&pattern={pattern}')
+        elif not isinstance(pattern, (str, type(None))):
+            raise ValueError('Pattern must be string or none')
+        if isinstance(obj_id, int):
+            result += ''.join(f'&{obj_id}')
+        elif not isinstance(obj_id, (int, type(None))):
+            raise ValueError('Id must be an int')
+        return result
+
     def response(self):
         """
         Get responses from url with params
@@ -228,5 +246,6 @@ class GetObjectInfo:
     __KEYS = {
         'config': 'https://suppliers-api.wildberries.ru/api/v1/config/get/object/translated?',
         'search by pattern': "https://suppliers-api.wildberries.ru/api/v1/config/get/object/list?",
-        'colors': 'https://suppliers-api.wildberries.ru/api/v1/directory/colors?'
+        'colors': 'https://suppliers-api.wildberries.ru/api/v1/directory/colors?',
+        'gender': 'https://suppliers-api.wildberries.ru/api/v1/directory/kinds?'
               }
