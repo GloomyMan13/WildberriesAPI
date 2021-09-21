@@ -177,7 +177,7 @@ class Getters:
 
 
 class GetObjectInfo:
-    def __init__(self, key, head=headers, **kwargs):
+    def __init__(self, key, head=headers, **params):
         try:
             key = key.lower()
             self.link = self.__KEYS[key]
@@ -185,19 +185,20 @@ class GetObjectInfo:
             print("Wrong keyword")
         except AttributeError:
             print('Key must be a string')
-
         if isinstance(headers, requests.structures.CaseInsensitiveDict):
             self.headers = head
         else:
             raise ValueError('Headers must be a dict')
-        self.params = self._setparam(key, **kwargs)
+        self.params = self._setparam(key, **params)
 
     @staticmethod
-    def _setparam(key, **kwargs):
+    def _setparam(key, **params):
         if key == 'config':
-            return GetObjectInfo.__config(**kwargs)
+            return GetObjectInfo.__config(**params)
         elif key == 'search by pattern':
-            return GetObjectInfo.__search_by_pattern(**kwargs)
+            return GetObjectInfo.__search_by_pattern(**params)
+        elif key == 'colors':
+            return GetObjectInfo.__colors(**params)
 
     @staticmethod
     def __config(name):
@@ -208,7 +209,7 @@ class GetObjectInfo:
 
     @staticmethod
     def __search_by_pattern(name, parent, lang='ru'):
-        if map(isinstance, (name, parent, lang), str):
+        if all(isinstance(x, str) for x in (name, parent, lang)):
             result = ''.join(f'pattern={name}&lang={lang}&parent={parent}')
             return result
         else:
@@ -226,8 +227,6 @@ class GetObjectInfo:
 
     __KEYS = {
         'config': 'https://suppliers-api.wildberries.ru/api/v1/config/get/object/translated?',
-        'search by pattern': "https://suppliers-api.wildberries.ru/api/v1/config/get/object/list?"
+        'search by pattern': "https://suppliers-api.wildberries.ru/api/v1/config/get/object/list?",
+        'colors': 'https://suppliers-api.wildberries.ru/api/v1/directory/colors?'
               }
-
-
-
